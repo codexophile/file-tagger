@@ -1,0 +1,22 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Helvetica, Arial, sans-serif;
+    margin: auto;
+    padding: 2rem;
+}
+
+#main {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#main > div {
+    margin: 4px;
+    padding: 4px;
+    border: 1px grey solid;
+}
+
+.heading {
+    font-size: large;
+    font-weight: bold;
+}
