@@ -1,6 +1,62 @@
 ( async function () {
     'use strict';
 
+    // Add drag and drop visual feedback
+    const dropZone = document.querySelector( '#drop-zone' );
+
+    dropZone.addEventListener( 'dragenter', ( e ) => {
+        e.preventDefault();
+        dropZone.classList.add( 'drag-over' );
+    } );
+
+    dropZone.addEventListener( 'dragover', ( e ) => {
+        e.preventDefault();
+        dropZone.classList.add( 'drag-over' );
+    } );
+
+    dropZone.addEventListener( 'dragleave', ( e ) => {
+        e.preventDefault();
+        dropZone.classList.remove( 'drag-over' );
+    } );
+
+    dropZone.addEventListener( 'drop', ( e ) => {
+        e.preventDefault();
+        dropZone.classList.remove( 'drag-over' );
+    } );
+
+    // Add hover effect to file options
+    function addFileOptionHoverEffect ( option ) {
+        option.addEventListener( 'mouseenter', () => {
+            option.style.transform = 'translateX(5px)';
+        } );
+        option.addEventListener( 'mouseleave', () => {
+            option.style.transform = 'translateX(0)';
+        } );
+    }
+
+    // Modify your existing $addFileOption function
+    function $addFileOption ( text ) {
+        const $option = $( `<option>${ text }</option>` );
+        filesListEl.add( $option[ 0 ] );
+
+        // Add hover effect
+        addFileOptionHoverEffect( $option[ 0 ] );
+
+        fs.access( text, ( err ) => {
+            if ( err ) {
+                $option.addClass( 'error' );
+                // Add shake animation for errors
+                $option[ 0 ].style.animation = 'shake 0.5s ease';
+            } else {
+                $option.addClass( 'no-error' );
+                // Add success animation
+                $option[ 0 ].style.animation = 'slideIn 0.3s ease';
+            }
+        } );
+
+        return $option;
+    }
+
     const fs = require( 'fs' );
     const ini = require( 'ini' );
     window.$ = window.jQuery = require( 'jquery' );
