@@ -10,7 +10,18 @@ body {
     flex-wrap: wrap;
 }
 
-#main > div {
+#filesList > .error {
+    color: red;
+}
+#filesList > .no-error {
+    color: green;
+}
+
+#floater-div > button {
+    font-size: large;
+}
+
+#main > .group {
     margin: 4px;
     padding: 4px;
     border: 1px grey solid;
