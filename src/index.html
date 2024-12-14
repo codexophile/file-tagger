@@ -2,39 +2,43 @@
 <html>
 
 <head>
-    <meta charset="UTF-8">
-    <title>File Tagger</title>
-    <link rel="stylesheet" href="index.css">
+  <meta charset="UTF-8">
+  <title>File Tagger</title>
+  <link rel="stylesheet" href="index.css">
 </head>
 
 <body>
-    <div id="drop-zone">
-        <div class="drop-message">Drag and drop files here</div>
-        <select id="filesList" multiple></select>
-    </div>
+  <div id="drop-zone">
+    <div class="drop-message">Drag and drop files here</div>
+    <select id="filesList" multiple></select>
+  </div>
 
-    <div id="main"></div>
+  <div id="main"></div>
 
-    <div id="floater-div">
-        <button id="copy-tags-btn" class="action-button">
-            <span class="button-icon">📋</span>
-            Copy tags
-        </button>
-        <button id="remove-btn" class="action-button">
-            <span class="button-icon">🗑️</span>
-            Remove
-        </button>
-        <button id="clear-btn" class="action-button">
-            <span class="button-icon">🧹</span>
-            Clear
-        </button>
-        <button id="proceed-btn" class="action-button primary">
-            <span class="button-icon">✨</span>
-            Proceed
-        </button>
-    </div>
+  <div id="floater-div">
+    <button id="edit-tags-btn" class="action-button">
+      <span class="button-icon">✏️</span>
+      Edit Tags
+    </button>
+    <button id="copy-tags-btn" class="action-button">
+      <span class="button-icon">📋</span>
+      Copy tags
+    </button>
+    <button id="remove-btn" class="action-button">
+      <span class="button-icon">🗑️</span>
+      Remove
+    </button>
+    <button id="clear-btn" class="action-button">
+      <span class="button-icon">🧹</span>
+      Clear
+    </button>
+    <button id="proceed-btn" class="action-button primary">
+      <span class="button-icon">✨</span>
+      Proceed
+    </button>
+  </div>
 
-    <script src="renderer.js"></script>
+  <script src="renderer.js"></script>
 </body>
 
 </html>
