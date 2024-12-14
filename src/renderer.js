@@ -62,6 +62,7 @@
   window.$ = window.jQuery = require( 'jquery' );
   const path = require( 'path' );
   const { ipcRenderer, clipboard } = require( 'electron' );
+  const { exec } = require( 'child_process' );
 
   const filesListEl = document.querySelector( '#filesList' );
 
@@ -74,6 +75,16 @@
 
   document.querySelector( `#edit-tags-btn` ).addEventListener( 'click', () => {
 
+    // Get the path to tags.ini one level up from the current directory
+    const tagsIniPath = path.join( __dirname, '..', 'tags.ini' );
+
+    // Launch Notepad with the tags.ini file
+    exec( `notepad "${ tagsIniPath }"`, ( error ) => {
+      if ( error ) {
+        console.error( `Error opening tags.ini: ${ error }` );
+        alert( `Could not open tags.ini: ${ error.message }` );
+      }
+    } );
   } );
   // Handle the proceed button click
   document.querySelector( '#proceed-btn' ).addEventListener( 'click', () => {
