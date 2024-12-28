@@ -49,6 +49,7 @@ const sortObjectGroupsAlphabetically = ( config ) => {
 
 const populateTagsUI = ( mainEl, sortedData ) => {
   Object.entries( sortedData ).forEach( ( [ groupName, tags ] ) => {
+    console.log( tags.keys );
     const groupDiv = document.createElement( 'div' );
     groupDiv.className = 'tag-group';
 
@@ -59,7 +60,7 @@ const populateTagsUI = ( mainEl, sortedData ) => {
     const tagsList = document.createElement( 'div' );
     tagsList.className = 'tags-list';
 
-    tags.forEach( tag => {
+    Object.keys( tags ).forEach( tag => {
       const tagElement = document.createElement( 'span' );
       tagElement.className = 'tag-item';
       tagElement.textContent = tag;
