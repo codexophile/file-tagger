@@ -1,17 +1,20 @@
+const fs = require( 'fs' );
+
 const $addFileOption = ( filePath, filesListEl ) => {
-  const fileId = `file-${ Date.now() }`;
-  const fileItem = document.createElement( 'div' );
-  fileItem.className = 'file-item';
-  fileItem.id = fileId;
 
-  fileItem.innerHTML = `
-    <span class="file-path">${ filePath }</span>
-    <button class="remove-file" data-file-id="${ fileId }">
-      Remove
-    </button>
-  `;
+  const $option = $( `<option>${ filePath }</option>` );
+  filesListEl.add( $option[ 0 ] );
 
-  filesListEl.appendChild( fileItem );
+  fs.access( filePath, ( err ) => {
+    if ( err ) {
+      $option.addClass( 'error' );
+    } else {
+      $option.addClass( 'no-error' );
+    }
+  } );
+
+  return $option;
+
 };
 
 const handleFileRemoval = ( fileId ) => {

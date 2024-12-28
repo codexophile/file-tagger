@@ -27,4 +27,5 @@ const { tagsIniPath } = require( './config/paths' );
   // Process command line arguments
   const args = await getCommandLineArgs();
   processInputFiles( args[ 0 ], filesListEl, $addFileOption );
+
 } )();
