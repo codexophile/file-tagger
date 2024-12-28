@@ -49,32 +49,29 @@ const sortObjectGroupsAlphabetically = ( config ) => {
 
 const populateTagsUI = ( mainEl, sortedData ) => {
   Object.entries( sortedData ).forEach( ( [ groupName, tags ] ) => {
-    console.log( tags.keys );
-    const groupDiv = document.createElement( 'div' );
-    groupDiv.className = 'tag-group';
 
-    const groupTitle = document.createElement( 'h3' );
-    groupTitle.textContent = groupName;
-    groupDiv.appendChild( groupTitle );
+    const $groupEl = $( `
+      <div class="group">
+        <span class="heading">${ groupName }</span>
+      </div>
+    ` ).appendTo( mainEl );
 
-    const tagsList = document.createElement( 'div' );
-    tagsList.className = 'tags-list';
-
-    Object.keys( tags ).forEach( tag => {
-      const tagElement = document.createElement( 'span' );
-      tagElement.className = 'tag-item';
-      tagElement.textContent = tag;
-      tagsList.appendChild( tagElement );
+    Object.keys( tags ).forEach( key => {
+      $( `<input type="checkbox" id="${ key }">` ).appendTo( $groupEl );
+      $( `<label for="${ key }">${ key }</label>` ).appendTo( $groupEl )
+        .on( 'contextmenu', ( event ) => {
+          const esQuery = `[${ event.target.textContent }]`;
+          const tempWindow = window.open( `es://"${ esQuery }"` );
+          tempWindow.close();
+        } );
     } );
 
-    groupDiv.appendChild( tagsList );
-    mainEl.appendChild( groupDiv );
   } );
 };
 
 const saveTagsToIni = ( tagsIniPath ) => {
   const newConfig = {};
-  const groups = document.querySelectorAll( '.tag-group' );
+  const groups = document.querySelectorAll( '.group' );
 
   groups.forEach( group => {
     const groupName = group.querySelector( 'h3' ).textContent;
