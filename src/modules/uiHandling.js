@@ -1,16 +1,19 @@
-const { handleFileRemoval, clearFileList } = require( './fileHandling' );
+const { clearFileList } = require( './fileHandling' );
 const path = require( 'path' );
 const { exec } = require( 'child_process' );
 const fs = require( 'fs' );
 
 const setupButtonListeners = ( filesListEl, tagsIniPath ) => {
+
   // Remove file button listener
-  filesListEl.addEventListener( 'click', ( e ) => {
-    if ( e.target.classList.contains( 'remove-file' ) ) {
-      const fileId = e.target.dataset.fileId;
-      handleFileRemoval( fileId );
-    }
-  } );
+  const removeFileButton = document.querySelector( '#remove-btn' );
+  if ( removeFileButton ) {
+    removeFileButton.addEventListener( 'click', () => {
+      [ ...filesListEl.selectedOptions ].forEach( optionEl => {
+        optionEl.remove();
+      } );
+    } );
+  }
 
   // Clear all files button listener
   const clearButton = document.querySelector( '#clear-files' );

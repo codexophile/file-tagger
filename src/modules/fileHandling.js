@@ -17,13 +17,6 @@ const $addFileOption = ( filePath, filesListEl ) => {
 
 };
 
-const handleFileRemoval = ( fileId ) => {
-  const fileElement = document.getElementById( fileId );
-  if ( fileElement ) {
-    fileElement.remove();
-  }
-};
-
 const clearFileList = ( filesListEl ) => {
   while ( filesListEl.firstChild ) {
     filesListEl.removeChild( filesListEl.firstChild );
@@ -32,6 +25,5 @@ const clearFileList = ( filesListEl ) => {
 
 module.exports = {
   $addFileOption,
-  handleFileRemoval,
   clearFileList
 };
