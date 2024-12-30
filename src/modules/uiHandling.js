@@ -1,9 +1,20 @@
 const { clearFileList } = require( './fileHandling' );
+const { getNewTagsArray } = require( './tagHandling' );
 const path = require( 'path' );
 const { exec } = require( 'child_process' );
 const fs = require( 'fs' );
+const { clipboard } = require( 'electron' );
 
 const setupButtonListeners = ( filesListEl, tagsIniPath ) => {
+
+  document.querySelector( `#copy-tags-btn` ).addEventListener( 'click', () => {
+    const queryForSelectedTagEls = `.group input[type="checkbox"]:checked + label`;
+    const selectedTagEls = document.querySelectorAll( queryForSelectedTagEls );
+    const selectedTagArr = Array.from( selectedTagEls ).map( el => `[${ el.textContent }]` );
+    const selectedTagString = selectedTagArr.join( '' );
+    if ( selectedTagString )
+      clipboard.writeText( selectedTagString );
+  } );
 
   // Remove file button listener
   const removeFileButton = document.querySelector( '#remove-btn' );
