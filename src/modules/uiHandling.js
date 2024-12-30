@@ -27,7 +27,7 @@ const setupButtonListeners = ( filesListEl, tagsIniPath ) => {
   }
 
   // Clear all files button listener
-  const clearButton = document.querySelector( '#clear-files' );
+  const clearButton = document.querySelector( '#clear-btn' );
   if ( clearButton ) {
     clearButton.addEventListener( 'click', () => {
       clearFileList( filesListEl );
