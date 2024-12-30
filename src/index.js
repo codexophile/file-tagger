@@ -25,11 +25,19 @@ const createWindow = () => {
   mainWindow.loadFile( path.join( __dirname, 'index.html' ) );
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  if ( process.argv.includes( '--debug-app' ) ) {
+    mainWindow.webContents.openDevTools();
+  }
 
   // Pass arguments to the renderer process
   mainWindow.webContents.on( 'did-finish-load', () => {
-    mainWindow.webContents.send( 'command-line-args', process.argv.slice( 2 ) );
+    const filesListIndex = process.argv.indexOf( '--files-list' );
+    const filesListArg = process.argv.slice( filesListIndex + 1 );
+    if ( filesListIndex === -1 ) {
+      mainWindow.webContents.send( 'command-line-args', null );
+      return;
+    }
+    mainWindow.webContents.send( 'command-line-args', filesListArg );
   } );
 
 };
