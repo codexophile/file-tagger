@@ -1,0 +1,2 @@
+C:\mega\IDEs\Electron\file-tagger\test_files\file one.txt
+C:\mega\IDEs\Electron\file-tagger\test_files\file two.txt
