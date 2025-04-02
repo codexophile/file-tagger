@@ -161,6 +161,10 @@
 
   window.addEventListener( 'drop', ( event ) => {
     event.preventDefault();
+
+    clearFilesList();
+    clearActiveTags();
+
     const files = Array.from( event.dataTransfer.files );
     const droppedFilesArray = files.map( file => file.path );
     prepareInputFilesSection( droppedFilesArray );
@@ -170,6 +174,13 @@
   } );
 
   //*__________________________________________________________________________________________________________________
+
+  function clearActiveTags () {
+    const checkboxes = document.querySelectorAll( 'input[type="checkbox"]' );
+    checkboxes.forEach( checkbox => {
+      checkbox.checked = false;
+    } );
+  }
 
   function clearFilesList () {
     $( filesListEl ).find( 'option' ).remove();
