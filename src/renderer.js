@@ -24,7 +24,6 @@
     dropZone.classList.remove( 'drag-over' );
   } );
 
-  // Add hover effect to file options
   function addFileOptionHoverEffect ( option ) {
     option.addEventListener( 'mouseenter', () => {
       option.style.transform = 'translateX(5px)';
@@ -34,12 +33,10 @@
     } );
   }
 
-  // Modify your existing $addFileOption function
   function $addFileOption ( text ) {
     const $option = $( `<option>${ text }</option>` );
     filesListEl.add( $option[ 0 ] );
 
-    // Add hover effect
     addFileOptionHoverEffect( $option[ 0 ] );
 
     fs.access( text, ( err ) => {
@@ -173,6 +170,10 @@
   } );
 
   //*__________________________________________________________________________________________________________________
+
+  function clearFilesList () {
+    $( filesListEl ).find( 'option' ).remove();
+  }
 
   function getArgs () {
     return new Promise( resolve => {
