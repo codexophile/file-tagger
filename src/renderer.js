@@ -1,5 +1,5 @@
 (async function () {
-  "use strict";
+  ("use strict");
 
   // Add drag and drop visual feedback
   const dropZone = document.querySelector("#drop-zone");
@@ -178,6 +178,135 @@
         });
     });
   });
+
+  //* Search and filter
+
+  // Add this code inside your existing IIFE in renderer.js, after the UI is populated with tags
+
+  // Add elements for search functionality
+  const noTagsMessage = document.createElement("div");
+  noTagsMessage.id = "no-tags-message";
+  noTagsMessage.textContent = "No matching tags found";
+  mainEl.appendChild(noTagsMessage);
+
+  // Setup tag search functionality
+  const tagSearchInput = document.querySelector("#tag-search");
+  const clearSearchButton = document.querySelector("#clear-search");
+
+  // Function to filter tags based on search input
+  function filterTags(searchText) {
+    const searchLower = searchText.toLowerCase();
+    let anyVisible = false;
+    let visibleGroups = 0;
+
+    // Add class to label elements for easier selection
+    const labels = document.querySelectorAll(".group label");
+    labels.forEach((label) => {
+      if (!label.classList.contains("tag-label")) {
+        label.classList.add("tag-label");
+      }
+    });
+
+    // Handle groups and their tags
+    const groups = document.querySelectorAll(".group");
+    groups.forEach((group) => {
+      const heading = group.querySelector(".heading").textContent;
+      const tags = group.querySelectorAll(".tag-label");
+
+      let groupHasVisibleTags = false;
+
+      tags.forEach((tag) => {
+        const tagText = tag.textContent;
+
+        if (searchLower === "" || tagText.toLowerCase().includes(searchLower)) {
+          tag.classList.remove("hidden");
+          groupHasVisibleTags = true;
+          anyVisible = true;
+
+          // Highlight matching text if there's a search
+          if (searchLower !== "") {
+            const regex = new RegExp(`(${escapeRegExp(searchText)})`, "gi");
+            tag.innerHTML = tagText.replace(
+              regex,
+              '<span class="highlight">$1</span>'
+            );
+          } else {
+            tag.textContent = tagText; // Reset the content
+          }
+        } else {
+          tag.classList.add("hidden");
+        }
+      });
+
+      if (groupHasVisibleTags || heading.toLowerCase().includes(searchLower)) {
+        group.classList.remove("hidden");
+        visibleGroups++;
+      } else {
+        group.classList.add("hidden");
+      }
+    });
+
+    // Show/hide "No tags found" message
+    if (!anyVisible) {
+      noTagsMessage.classList.add("visible");
+    } else {
+      noTagsMessage.classList.remove("visible");
+    }
+  }
+
+  // Helper function to escape special characters in string for regex
+  function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  // Event listener for search input
+  tagSearchInput.addEventListener("input", () => {
+    filterTags(tagSearchInput.value);
+  });
+
+  // Event listener for clear button
+  clearSearchButton.addEventListener("click", () => {
+    tagSearchInput.value = "";
+    filterTags("");
+    tagSearchInput.focus();
+  });
+
+  // Add keyboard shortcut (Ctrl+F or Cmd+F) to focus search box
+  document.addEventListener("keydown", (event) => {
+    if ((event.ctrlKey || event.metaKey) && event.key === "f") {
+      event.preventDefault();
+      tagSearchInput.focus();
+    }
+
+    // Press Escape to clear search
+    if (event.key === "Escape" && document.activeElement === tagSearchInput) {
+      tagSearchInput.value = "";
+      filterTags("");
+    }
+  });
+
+  // Update label selection when filtering is applied
+  // This ensures that existing checkboxes still work correctly
+  function $addFileOption(text) {
+    const $option = $(`<option>${text}</option>`);
+    filesListEl.add($option[0]);
+
+    addFileOptionHoverEffect($option[0]);
+
+    fs.access(text, (err) => {
+      if (err) {
+        $option.addClass("error");
+        // Add shake animation for errors
+        $option[0].style.animation = "shake 0.5s ease";
+      } else {
+        $option.addClass("no-error");
+        // Add success animation
+        $option[0].style.animation = "slideIn 0.3s ease";
+      }
+    });
+
+    return $option;
+  }
 
   //* drag and drop
 
