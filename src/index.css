@@ -336,3 +336,93 @@ body {
     opacity: 1;
   }
 }
+
+/* --- Add these styles to index.css --- */
+
+/* Style for the Add Tag button (+) */
+.add-tag-btn {
+  display: inline-flex; /* Align with text/labels */
+  align-items: center;
+  justify-content: center;
+  width: 24px; /* Smaller size */
+  height: 24px; /* Smaller size */
+  margin-left: 0.8rem; /* Space from last tag */
+  padding: 0; /* Remove default padding */
+  border-radius: 50%; /* Make it circular */
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  font-size: 1.2em; /* Make the '+' bigger */
+  font-weight: bold;
+  line-height: 1; /* Center the '+' */
+  transition: all 0.2s ease;
+  vertical-align: middle; /* Align vertically with labels */
+}
+
+.add-tag-btn:hover {
+  background-color: var(--hover-bg);
+  color: var(--text-primary);
+  border-color: var(--accent-primary);
+  transform: scale(1.1);
+}
+
+/* Container for the inline add tag input and buttons */
+.add-tag-inline-container {
+  display: inline-flex; /* Keep it on the same line */
+  align-items: center;
+  margin-left: 0.5rem; /* Space it slightly */
+  padding: 0.3rem 0.5rem;
+  background-color: var(--bg-tertiary);
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  vertical-align: middle; /* Align vertically */
+}
+
+.add-tag-inline-container input[type="text"] {
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border-radius: 4px;
+  font-size: 0.85em;
+  margin-right: 0.4rem;
+  min-width: 100px; /* Give it some base width */
+}
+
+.add-tag-inline-container input[type="text"]:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px rgba(61, 132, 247, 0.3);
+}
+
+/* Small buttons for save/cancel */
+.add-tag-inline-container .action-button-small {
+  padding: 0.2rem 0.5rem;
+  font-size: 0.8em;
+  min-width: auto; /* Allow smaller width */
+  margin-left: 0.3rem;
+}
+
+.add-tag-inline-container .action-button-small.save {
+  background-color: var(--success-color); /* Green for save */
+  color: white;
+}
+.add-tag-inline-container .action-button-small.save:hover {
+  background-color: #45a049; /* Darker green */
+}
+
+.add-tag-inline-container .action-button-small.cancel {
+  background-color: var(--error-color); /* Red for cancel */
+  color: white;
+}
+.add-tag-inline-container .action-button-small.cancel:hover {
+  background-color: #e53935; /* Darker red */
+}
+
+/* Hide elements smoothly */
+.hidden-add-tag {
+  display: none !important; /* Use important to override inline-flex if needed */
+}
+
+/* --- End of new styles --- */
