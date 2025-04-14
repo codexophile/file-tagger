@@ -461,15 +461,13 @@
       // Maybe flash the new tag briefly?
       const newLabel = $groupEl.find(`label:contains("${newTagName}")`);
       if (newLabel.length) {
-        newLabel
-          .css({ backgroundColor: "var(--accent-primary)", color: "white" })
-          .animate(
-            {
-              backgroundColor: "var(--bg-tertiary)",
-              color: "var(--text-secondary)",
-            },
-            1000
-          );
+        newLabel.animate(
+          {
+            backgroundColor: "var(--bg-tertiary)",
+            color: "var(--text-secondary)",
+          },
+          1000
+        );
       }
     } else {
       // Error saving (alert handled in saveNewTag)
