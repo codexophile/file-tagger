@@ -59,9 +59,9 @@
     const args = await ipcHandler.getArgs();
     // Args from main process usually don't include the script name itself
     // The first arg (index 0) would be the first actual parameter passed
-    if (args && args.length > 0 && args[0]) {
+    if (args && args.length > 0 && args[1]) {
       console.log("Processing command line arguments:", args);
-      const inputFilesString = args[0]; // Assuming files are passed as the first arg, newline separated
+      const inputFilesString = args[1]; // Assuming files are passed as the first arg, newline separated
       const inputFilesArray = inputFilesString.trim().split(/\r?\n/);
 
       // Clear existing state before loading from args
