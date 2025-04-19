@@ -8,13 +8,13 @@
   // const $ = require("jquery"); // Can require locally if needed
 
   // --- Application Modules ---
-  const domElements = require("./dom-elements");
-  const ipcHandler = require("./ipc-handler");
-  const fileList = require("./file-list");
-  const tagStore = require("./tag-store");
-  const tagUI = require("./tag-ui");
-  const dragDrop = require("./drag-drop");
-  const actionHandlers = require("./action-handlers");
+  const domElements = require("./renderer/dom-elements");
+  const ipcHandler = require("./renderer/ipc-handler");
+  const fileList = require("./renderer/file-list");
+  const tagStore = require("./renderer/tag-store");
+  const tagUI = require("./renderer/tag-ui");
+  const dragDrop = require("./renderer/drag-drop");
+  const actionHandlers = require("./renderer/action-handlers");
 
   // --- Constants ---
   // Assumes index.html and tags.ini are in the project root directory
