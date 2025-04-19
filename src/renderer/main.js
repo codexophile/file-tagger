@@ -18,7 +18,7 @@
 
   // --- Constants ---
   // Assumes index.html and tags.ini are in the project root directory
-  const tagsIniPath = path.resolve(__dirname, "tags.ini");
+  const tagsIniPath = path.resolve("./", "tags.ini");
   console.log(`Using tags.ini path: ${tagsIniPath}`);
 
   // --- Initialization ---
