@@ -7,6 +7,7 @@ const elements = {
   mainTagsContainerEl: document.querySelector("#main"), // Renamed from mainEl for clarity
   tagSearchInput: document.querySelector("#tag-search"),
   clearSearchButton: document.querySelector("#clear-search"),
+  addGroupButton: document.querySelector("#add-group-btn"),
   editTagsButton: document.querySelector(`#edit-tags-btn`),
   proceedButton: document.querySelector("#proceed-btn"),
   copyTagsButton: document.querySelector(`#copy-tags-btn`),

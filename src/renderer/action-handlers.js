@@ -11,6 +11,7 @@ let domElements;
 let tagsIniPath;
 let fileListModule;
 let tagUIModule;
+const tagStore = require('./tag-store');
 
 function setupActionHandlers(
   _domElements,
@@ -37,6 +38,9 @@ function setupActionHandlers(
   domElements.clearFilesButton.addEventListener('click', handleClearFiles);
   domElements.clearSearchButton.addEventListener('click', handleClearSearch);
   domElements.tagSearchInput.addEventListener('input', handleSearchInput);
+  if (domElements.addGroupButton) {
+    domElements.addGroupButton.addEventListener('click', handleAddGroup);
+  }
 
   // Global keydowns previously in main IIFE
   document.addEventListener('keydown', handleGlobalKeydown);
@@ -53,6 +57,93 @@ function handleEditTags() {
       alert(`Could not open ${tagsIniPath}: ${error.message}`);
     }
   });
+}
+
+function handleAddGroup() {
+  const $btn = $(domElements.addGroupButton);
+  // If an inline UI already exists, focus it
+  const $existing = $('#add-group-inline');
+  if ($existing.length) {
+    $existing.find('input').trigger('focus');
+    return;
+  }
+
+  // Disable button while inline UI is open
+  $btn.prop('disabled', true);
+
+  // Build inline UI
+  const $container = $(`
+    <span id="add-group-inline" class="add-tag-inline-container">
+      <input type="text" class="add-group-input-inline" placeholder="New group name">
+      <button class="action-button-small save" title="Create Group">✔️</button>
+      <button class="action-button-small cancel" title="Cancel">❌</button>
+    </span>
+  `);
+
+  // Insert after the button
+  $container.insertAfter($btn);
+
+  const $input = $container.find('input');
+  const $save = $container.find('button.save');
+  const $cancel = $container.find('button.cancel');
+
+  function cleanup() {
+    $container.remove();
+    $btn.prop('disabled', false).trigger('focus');
+  }
+
+  function saveGroup() {
+    const raw = $input.val();
+    const groupName = (raw || '').trim();
+    if (!groupName) {
+      alert('Group name cannot be empty.');
+      $input.trigger('focus');
+      return;
+    }
+    if (/[^\w\s\-]/.test(groupName) || /[\[\]]/.test(groupName)) {
+      alert('Group name can only contain letters, numbers, spaces, dashes, and underscores, and cannot include [ or ].');
+      $input.trigger('focus');
+      return;
+    }
+
+    if (!tagStore.saveNewGroup(tagsIniPath, groupName)) {
+      // Error already shown
+      $input.trigger('focus');
+      return;
+    }
+
+    // Update UI
+    tagUIModule.addGroupToUI(
+      tagsIniPath,
+      domElements.mainTagsContainerEl,
+      groupName
+    );
+    // Update filter state to reflect current search text
+    tagUIModule.filterTags(
+      domElements.mainTagsContainerEl,
+      domElements.noTagsMessage,
+      domElements.tagSearchInput.value
+    );
+    cleanup();
+  }
+
+  $save.on('click', saveGroup);
+  $cancel.on('click', cleanup);
+  $input.on('keypress', e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      saveGroup();
+    }
+  });
+  $input.on('keydown', e => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      cleanup();
+    }
+  });
+
+  // Focus input initially
+  $input.trigger('focus');
 }
 
 function handleProceed() {

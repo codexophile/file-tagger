@@ -1,8 +1,8 @@
 // --- START OF FILE renderer/tag-store.js ---
-"use strict";
-const fs = require("fs");
-const ini = require("ini");
-const { sortObjectGroupsAlphabetically } = require("./utils"); // Import utility
+'use strict';
+const fs = require('fs');
+const ini = require('ini');
+const { sortObjectGroupsAlphabetically } = require('./utils'); // Import utility
 
 function loadTagsFromIni(tagsIniPath) {
   try {
@@ -11,9 +11,9 @@ function loadTagsFromIni(tagsIniPath) {
         `tags.ini not found at ${tagsIniPath}. Creating an empty file.`
       );
       // Create an empty file or a default structure if preferred
-      fs.writeFileSync(tagsIniPath, "[ExampleGroup]\nExampleTag=\n", "utf-8");
+      fs.writeFileSync(tagsIniPath, '[ExampleGroup]\nExampleTag=\n', 'utf-8');
     }
-    const iniContent = fs.readFileSync(tagsIniPath, "utf-8");
+    const iniContent = fs.readFileSync(tagsIniPath, 'utf-8');
     const config = ini.parse(iniContent);
     return sortObjectGroupsAlphabetically(config);
   } catch (error) {
@@ -26,7 +26,7 @@ function loadTagsFromIni(tagsIniPath) {
 function saveNewTag(tagsIniPath, groupName, tagName) {
   try {
     // Re-read the file before writing to minimize race conditions (though not fully preventing them)
-    const iniContent = fs.readFileSync(tagsIniPath, "utf-8");
+    const iniContent = fs.readFileSync(tagsIniPath, 'utf-8');
     const config = ini.parse(iniContent);
 
     if (!config[groupName]) {
@@ -35,7 +35,7 @@ function saveNewTag(tagsIniPath, groupName, tagName) {
         `Group "${groupName}" did not exist in tags.ini, creating it.`
       );
     } else if (
-      typeof config[groupName] !== "object" ||
+      typeof config[groupName] !== 'object' ||
       config[groupName] === null
     ) {
       console.warn(
@@ -54,13 +54,13 @@ function saveNewTag(tagsIniPath, groupName, tagName) {
     }
 
     // Add the new tag key. Value is typically empty or irrelevant.
-    config[groupName][tagName] = "";
+    config[groupName][tagName] = '';
 
     // Sort keys within the modified group before stringifying
     const sortedGroup = {};
     Object.keys(config[groupName])
       .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
-      .forEach((key) => {
+      .forEach(key => {
         if (Object.prototype.hasOwnProperty.call(config[groupName], key)) {
           sortedGroup[key] = config[groupName][key];
         }
@@ -71,7 +71,7 @@ function saveNewTag(tagsIniPath, groupName, tagName) {
     // Sort top-level groups as well before saving
     const sortedConfig = sortObjectGroupsAlphabetically(config);
     const newIniContent = ini.stringify(sortedConfig);
-    fs.writeFileSync(tagsIniPath, newIniContent, "utf-8");
+    fs.writeFileSync(tagsIniPath, newIniContent, 'utf-8');
 
     console.log(
       `Tag "${tagName}" added to group "${groupName}" in ${tagsIniPath}`
@@ -87,8 +87,43 @@ function saveNewTag(tagsIniPath, groupName, tagName) {
   }
 }
 
+function saveNewGroup(tagsIniPath, groupName) {
+  try {
+    const iniContent = fs.existsSync(tagsIniPath)
+      ? fs.readFileSync(tagsIniPath, "utf-8")
+      : "";
+    const config = iniContent ? ini.parse(iniContent) : {};
+
+    if (!groupName || /[\[\]]/.test(groupName)) {
+      alert("Invalid group name.");
+      return false;
+    }
+
+    if (
+      Object.keys(config).some(
+        (g) => g.toLowerCase() === groupName.toLowerCase()
+      )
+    ) {
+      alert(`Group "${groupName}" already exists.`);
+      return false;
+    }
+
+    config[groupName] = {};
+
+    const sortedConfig = sortObjectGroupsAlphabetically(config);
+    const newIniContent = ini.stringify(sortedConfig);
+    fs.writeFileSync(tagsIniPath, newIniContent, "utf-8");
+    console.log(`Group "${groupName}" created in ${tagsIniPath}`);
+    return true;
+  } catch (error) {
+    console.error(`Failed to create group "${groupName}":`, error);
+    alert(`Error creating group in ${tagsIniPath}: ${error.message}`);
+    return false;
+  }
+}
 module.exports = {
   loadTagsFromIni,
   saveNewTag,
+  saveNewGroup,
 };
 // --- END OF FILE renderer/tag-store.js ---
