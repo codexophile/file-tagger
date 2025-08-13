@@ -90,19 +90,17 @@ function saveNewTag(tagsIniPath, groupName, tagName) {
 function saveNewGroup(tagsIniPath, groupName) {
   try {
     const iniContent = fs.existsSync(tagsIniPath)
-      ? fs.readFileSync(tagsIniPath, "utf-8")
-      : "";
+      ? fs.readFileSync(tagsIniPath, 'utf-8')
+      : '';
     const config = iniContent ? ini.parse(iniContent) : {};
 
     if (!groupName || /[\[\]]/.test(groupName)) {
-      alert("Invalid group name.");
+      alert('Invalid group name.');
       return false;
     }
 
     if (
-      Object.keys(config).some(
-        (g) => g.toLowerCase() === groupName.toLowerCase()
-      )
+      Object.keys(config).some(g => g.toLowerCase() === groupName.toLowerCase())
     ) {
       alert(`Group "${groupName}" already exists.`);
       return false;
@@ -112,7 +110,7 @@ function saveNewGroup(tagsIniPath, groupName) {
 
     const sortedConfig = sortObjectGroupsAlphabetically(config);
     const newIniContent = ini.stringify(sortedConfig);
-    fs.writeFileSync(tagsIniPath, newIniContent, "utf-8");
+    fs.writeFileSync(tagsIniPath, newIniContent, 'utf-8');
     console.log(`Group "${groupName}" created in ${tagsIniPath}`);
     return true;
   } catch (error) {

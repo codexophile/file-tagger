@@ -181,9 +181,11 @@ function addGroupToUI(tagsIniPath, mainTagsContainerEl, groupName) {
                               </div>`);
 
   // Add the "Add Tag" button (+) to the group
-  const $addTagBtn = $(`<button class="add-tag-btn" title="Add new tag to '${groupName}'">+</button>`);
-  $addTagBtn.on("click", (e) => {
-    $(e.currentTarget).addClass("hidden-add-tag");
+  const $addTagBtn = $(
+    `<button class="add-tag-btn" title="Add new tag to '${groupName}'">+</button>`
+  );
+  $addTagBtn.on('click', e => {
+    $(e.currentTarget).addClass('hidden-add-tag');
     showAddTagInput(tagsIniPath, groupName, $groupEl, $(e.currentTarget));
   });
   $groupEl.append($addTagBtn);
@@ -193,11 +195,11 @@ function addGroupToUI(tagsIniPath, mainTagsContainerEl, groupName) {
 }
 
 function insertGroupSorted($container, $newGroup) {
-  const newName = ($newGroup.data("group-name") || "").toLowerCase();
+  const newName = ($newGroup.data('group-name') || '').toLowerCase();
   const $groups = $container.children('.group');
 
   let inserted = false;
-  $groups.each(function() {
+  $groups.each(function () {
     const $existing = $(this);
     const existingName = ($existing.data('group-name') || '').toLowerCase();
     if (newName.localeCompare(existingName) < 0) {
@@ -288,7 +290,9 @@ function populateTagUI(tagsIniPath, mainTagsContainerEl, tagData) {
   $(mainTagsContainerEl).find('.group').remove(); // Clear existing groups first
 
   Object.entries(tagData).forEach(([group, groupData]) => {
-  const $groupEl = $(`<div class=\"group\" data-group-name=\"${group}\">\n                                <span class=\"heading\">${group}</span>\n                              </div>`).appendTo(mainTagsContainerEl);
+    const $groupEl = $(
+      `<div class=\"group\" data-group-name=\"${group}\">\n                                <span class=\"heading\">${group}</span>\n                              </div>`
+    ).appendTo(mainTagsContainerEl);
 
     // Add existing tags
     if (typeof groupData === 'object' && groupData !== null) {

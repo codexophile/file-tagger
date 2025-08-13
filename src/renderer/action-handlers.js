@@ -101,7 +101,9 @@ function handleAddGroup() {
       return;
     }
     if (/[^\w\s\-]/.test(groupName) || /[\[\]]/.test(groupName)) {
-      alert('Group name can only contain letters, numbers, spaces, dashes, and underscores, and cannot include [ or ].');
+      alert(
+        'Group name can only contain letters, numbers, spaces, dashes, and underscores, and cannot include [ or ].'
+      );
       $input.trigger('focus');
       return;
     }
