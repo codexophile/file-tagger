@@ -195,21 +195,22 @@ function handleProceed() {
       } = path.parse(fullName);
       const regexForTags = /\[[^\]]+\]/g;
       const currentTagsArray = fileName.match(regexForTags) || [];
-      const fileNameWithoutTags = fileName.replace(regexForTags, '').trim();
-
-      // Ensure uniqueness and sort
-      const combinedUniqueTagsArray = [
-        ...new Set([...currentTagsArray, ...newTagsArray]),
-      ].sort();
-      const tagsString = combinedUniqueTagsArray.join(' '); // Space separated
-
-      // Construct new name carefully, avoid double spaces
-      let newFileName = fileNameWithoutTags;
-      if (tagsString) {
-        newFileName += ` ${tagsString}`;
+      // Only add new tags that are not already present
+      const currentTagSet = new Set(currentTagsArray);
+      const tagsToAppend = [];
+      for (const tag of newTagsArray) {
+        if (!currentTagSet.has(tag)) {
+          tagsToAppend.push(tag);
+        }
       }
-      newFileName += extension;
-      const newPath = path.join(dirPath, newFileName.trim()); // Trim final result
+
+      // Reconstruct the filename: keep original base name (with tags in place), append new tags at the end
+      let newFileName = fileName;
+      if (tagsToAppend.length > 0) {
+        newFileName += ' ' + tagsToAppend.join(' ');
+      }
+      newFileName = newFileName.trim() + extension;
+      const newPath = path.join(dirPath, newFileName);
 
       if (fullName === newPath) {
         console.log(`Skipping rename (no change): ${fullName}`);
