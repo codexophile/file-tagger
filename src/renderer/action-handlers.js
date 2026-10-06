@@ -12,6 +12,11 @@ let tagsIniPath;
 let fileListModule;
 let tagUIModule;
 const tagStore = require('./tag-store');
+const {
+  parseTags,
+  formatNewTagGroup,
+  canUseNewFormat,
+} = require('./tag-formats');
 
 function setupActionHandlers(
   _domElements,
@@ -193,8 +198,7 @@ function handleProceed() {
         ext: extension,
         dir: dirPath,
       } = path.parse(fullName);
-      const regexForTags = /\[[^\]]+\]/g;
-      const currentTagsArray = fileName.match(regexForTags) || [];
+      const currentTagsArray = parseTags(fileName);
       // Only add new tags that are not already present
       const currentTagSet = new Set(currentTagsArray);
       const tagsToAppend = [];
@@ -207,7 +211,11 @@ function handleProceed() {
       // Reconstruct the filename: keep original base name (with tags in place), append new tags at the end
       let newFileName = fileName;
       if (tagsToAppend.length > 0) {
-        newFileName += ' ' + tagsToAppend.join(' ');
+        const tagNames = tagsToAppend.map(tag => tag.slice(1, -1));
+        const tagsToAdd = canUseNewFormat(tagNames)
+          ? formatNewTagGroup(tagNames)
+          : tagsToAppend.join(' ');
+        newFileName += ' ' + tagsToAdd;
       }
       newFileName = newFileName.trim() + extension;
       const newPath = path.join(dirPath, newFileName);
@@ -272,7 +280,10 @@ function handleCopyNewTags() {
   const newTagsArray = tagUIModule.getNewTagsArray(
     domElements.mainTagsContainerEl
   );
-  const textToBeCopied = newTagsArray.join(' ');
+  const tagNames = newTagsArray.map(tag => tag.slice(1, -1));
+  const textToBeCopied = canUseNewFormat(tagNames)
+    ? formatNewTagGroup(tagNames)
+    : newTagsArray.join(' ');
   if (textToBeCopied) {
     clipboard.writeText(textToBeCopied.trim());
     console.log('Copied selected tags:', textToBeCopied.trim());

@@ -19,7 +19,7 @@
 
   // --- Constants ---
   // Resolve relative to the project root (one level up from src/renderer)
-  const tagsIniPath = path.join(__dirname, '..', 'tags.ini');
+  const tagsIniPath = path.join(__dirname, '..', 'database/tags.ini');
   console.log(`Using tags.ini path: ${tagsIniPath}`);
 
   // --- Initialization ---
@@ -31,7 +31,7 @@
   tagUI.populateTagUI(
     tagsIniPath,
     domElements.mainTagsContainerEl,
-    currentTagData
+    currentTagData,
   );
 
   // 3. Setup Drag and Drop
@@ -42,7 +42,7 @@
     fileList.clearFilesList,
     fileList.prepareInputFilesSection,
     () => tagUI.clearActiveTags(domElements.mainTagsContainerEl), // Wrap clearActiveTags
-    () => tagUI.cancelAllInlineAddTags(domElements.mainTagsContainerEl) // Wrap cancel function
+    () => tagUI.cancelAllInlineAddTags(domElements.mainTagsContainerEl), // Wrap cancel function
   );
 
   // 4. Setup Action Handlers (Buttons, Search, Keys)
@@ -67,7 +67,7 @@
       // Load files
       fileList.prepareInputFilesSection(
         domElements.filesListEl,
-        inputFilesArray
+        inputFilesArray,
       );
     } else {
       console.log('No valid command line arguments to process.');
@@ -81,7 +81,7 @@
   tagUI.filterTags(
     domElements.mainTagsContainerEl,
     domElements.noTagsMessage,
-    domElements.tagSearchInput.value
+    domElements.tagSearchInput.value,
   );
 
   console.log('Renderer initialization complete.');

@@ -3,6 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 const $ = require("jquery"); // Use local $ require
+const { parseTags, formatNewTagGroup } = require("./tag-formats");
 
 function addFileOptionHoverEffect(option) {
   option.addEventListener("mouseenter", () => {
@@ -62,15 +63,17 @@ function removeSelectedFile(filesListEl) {
 
 function getCurrentTagsFromFiles(filesListEl) {
   const allTags = new Set();
-  const regexForTags = /\[[^\]]+\]/g;
 
   Array.from(filesListEl.options).forEach((fileOption) => {
     const fileName = path.basename(fileOption.textContent);
-    const tags = fileName.match(regexForTags) || [];
+    const tags = parseTags(fileName);
     tags.forEach((tag) => allTags.add(tag));
   });
 
-  return [...allTags].sort().join(" ").trim();
+  const sortedTags = [...allTags].sort();
+  return sortedTags.length
+    ? formatNewTagGroup(sortedTags.map(tag => tag.slice(1, -1)))
+    : "";
 }
 
 module.exports = {
