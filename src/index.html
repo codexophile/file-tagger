@@ -23,7 +23,12 @@
     </button>
   </div>
 
-  <div id="main"></div>
+  <div id="tag-tabs" role="tablist" aria-label="Tag databases">
+    <button id="regular-tags-tab" class="tag-tab active" role="tab" aria-selected="true">Regular tags</button>
+    <button id="people-tags-tab" class="tag-tab" role="tab" aria-selected="false">Person tags</button>
+  </div>
+
+  <div id="main" role="tabpanel" aria-labelledby="regular-tags-tab"></div>
 
   <div id="floater-div">
     <button id="edit-tags-btn" class="action-button">

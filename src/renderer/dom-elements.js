@@ -15,6 +15,8 @@ const elements = {
   removeFileButton: document.querySelector('#remove-btn'),
   clearFilesButton: document.querySelector('#clear-btn'),
   tagSearchContainer: document.querySelector('#tag-search-container'), // Added for message placement
+  regularTagsTab: document.querySelector('#regular-tags-tab'),
+  peopleTagsTab: document.querySelector('#people-tags-tab'),
   noTagsMessage: null, // Will be created dynamically
 };
 

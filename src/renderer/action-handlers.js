@@ -9,8 +9,12 @@ const $ = require('jquery');
 // These will be passed in during setup
 let domElements;
 let tagsIniPath;
+let peoplePath;
 let fileListModule;
 let tagUIModule;
+let peopleUIModule;
+let peopleData;
+let activeTab = 'regular';
 const tagStore = require('./tag-store');
 const {
   parseTags,
@@ -22,14 +26,20 @@ const {
 function setupActionHandlers(
   _domElements,
   _tagsIniPath,
+  _peoplePath,
   _fileListModule,
-  _tagUIModule
+  _tagUIModule,
+  _peopleUIModule,
+  _peopleData
 ) {
   // Store references
   domElements = _domElements;
   tagsIniPath = _tagsIniPath;
+  peoplePath = _peoplePath;
   fileListModule = _fileListModule;
   tagUIModule = _tagUIModule;
+  peopleUIModule = _peopleUIModule;
+  peopleData = _peopleData;
 
   // --- Attach Listeners ---
 
@@ -44,6 +54,8 @@ function setupActionHandlers(
   domElements.clearFilesButton.addEventListener('click', handleClearFiles);
   domElements.clearSearchButton.addEventListener('click', handleClearSearch);
   domElements.tagSearchInput.addEventListener('input', handleSearchInput);
+  domElements.regularTagsTab.addEventListener('click', () => switchTab('regular'));
+  domElements.peopleTagsTab.addEventListener('click', () => switchTab('people'));
   if (domElements.addGroupButton) {
     domElements.addGroupButton.addEventListener('click', handleAddGroup);
   }
@@ -57,10 +69,11 @@ function setupActionHandlers(
 // --- Handler Functions ---
 
 function handleEditTags() {
-  exec(`notepad "${tagsIniPath}"`, error => {
+  const databasePath = activeTab === 'people' ? peoplePath : tagsIniPath;
+  exec(`notepad "${databasePath}"`, error => {
     if (error) {
-      console.error(`Error opening tags.ini: ${error}`);
-      alert(`Could not open ${tagsIniPath}: ${error.message}`);
+      console.error(`Error opening tag database: ${error}`);
+      alert(`Could not open ${databasePath}: ${error.message}`);
     }
   });
 }
@@ -316,21 +329,54 @@ function handleClearFiles() {
 }
 
 function handleSearchInput() {
-  tagUIModule.filterTags(
-    domElements.mainTagsContainerEl,
-    domElements.noTagsMessage,
-    domElements.tagSearchInput.value
-  );
+  filterActiveTab();
 }
 
 function handleClearSearch() {
   domElements.tagSearchInput.value = '';
-  tagUIModule.filterTags(
-    domElements.mainTagsContainerEl,
-    domElements.noTagsMessage,
-    ''
-  );
+  filterActiveTab();
   domElements.tagSearchInput.focus();
+}
+
+function filterActiveTab() {
+  if (activeTab === 'people') {
+    peopleUIModule.filterPeople(
+      domElements.mainTagsContainerEl,
+      domElements.noTagsMessage,
+      domElements.tagSearchInput.value
+    );
+  } else {
+    tagUIModule.filterTags(
+      domElements.mainTagsContainerEl,
+      domElements.noTagsMessage,
+      domElements.tagSearchInput.value
+    );
+  }
+}
+
+function switchTab(tab) {
+  activeTab = tab;
+  const showingPeople = tab === 'people';
+  domElements.regularTagsTab.classList.toggle('active', !showingPeople);
+  domElements.peopleTagsTab.classList.toggle('active', showingPeople);
+  domElements.regularTagsTab.setAttribute('aria-selected', String(!showingPeople));
+  domElements.peopleTagsTab.setAttribute('aria-selected', String(showingPeople));
+  domElements.mainTagsContainerEl.setAttribute(
+    'aria-labelledby',
+    showingPeople ? 'people-tags-tab' : 'regular-tags-tab'
+  );
+  domElements.addGroupButton.hidden = showingPeople;
+  domElements.mainTagsContainerEl.innerHTML = '';
+  if (showingPeople) {
+    peopleUIModule.populatePeopleUI(domElements.mainTagsContainerEl, peopleData);
+  } else {
+    tagUIModule.populateTagUI(
+      tagsIniPath,
+      domElements.mainTagsContainerEl,
+      tagStore.loadTagsFromIni(tagsIniPath)
+    );
+  }
+  filterActiveTab();
 }
 
 function handleGlobalKeydown(event) {

@@ -119,6 +119,25 @@ structure:
 ExampleTag=
 ```
 
+## Person tags
+
+Person tags are stored separately in [`database/people.txt`](./database/people.txt).
+They always begin with `@` and are grouped in sections. A person entry starts
+with its tag and may have `name`, `photo`, and comma-separated `links`
+attributes:
+
+```text
+[Friends]
+@alice
+name=Alice Example
+photo=https://example.com/alice.jpg
+links=https://example.com/alice, https://github.com/example
+```
+
+The Person tags tab displays these entries and uses the same search box as the
+Regular tags tab. Selecting a person applies the `@` tag to the filename using
+the same bracketed tag format as regular tags, for example `[@alice]`.
+
 ## Current tags
 
 **Copy current tags** scans both tag formats, removes duplicates, sorts the

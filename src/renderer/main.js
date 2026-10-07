@@ -14,12 +14,15 @@
   const fileList = require('./renderer/file-list');
   const tagStore = require('./renderer/tag-store');
   const tagUI = require('./renderer/tag-ui');
+  const peopleStore = require('./renderer/people-store');
+  const peopleUI = require('./renderer/people-ui');
   const dragDrop = require('./renderer/drag-drop');
   const actionHandlers = require('./renderer/action-handlers');
 
   // --- Constants ---
   // Resolve relative to the project root (one level up from src/renderer)
-  const tagsIniPath = path.join(__dirname, '..', 'database/tags.ini');
+  const tagsIniPath = path.join(__dirname, '..', 'database', 'tags.ini');
+  const peoplePath = path.join(__dirname, '..', 'database', 'people.txt');
   console.log(`Using tags.ini path: ${tagsIniPath}`);
 
   // --- Initialization ---
@@ -33,6 +36,7 @@
     domElements.mainTagsContainerEl,
     currentTagData,
   );
+  const peopleData = peopleStore.loadPeopleFromFile(peoplePath);
 
   // 3. Setup Drag and Drop
   // Pass necessary functions from other modules
@@ -47,7 +51,15 @@
 
   // 4. Setup Action Handlers (Buttons, Search, Keys)
   // Pass dependencies needed by the handlers
-  actionHandlers.setupActionHandlers(domElements, tagsIniPath, fileList, tagUI);
+  actionHandlers.setupActionHandlers(
+    domElements,
+    tagsIniPath,
+    peoplePath,
+    fileList,
+    tagUI,
+    peopleUI,
+    peopleData,
+  );
 
   // 5. Handle Command Line Arguments (Asynchronously)
   try {

@@ -412,7 +412,11 @@ function getNewTagsArray(mainTagsContainerEl) {
           label = nextEl;
         }
       }
-      return label ? `[${label.textContent}]` : ''; // Get text from label
+      return item.value.startsWith('@')
+        ? `[${item.value}]`
+        : label
+          ? `[${label.textContent}]`
+          : '';
     })
     .filter(tag => tag !== ''); // Filter out potential empty tags if label not found
 }
