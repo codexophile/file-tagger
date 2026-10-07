@@ -22,7 +22,7 @@
   // --- Constants ---
   // Resolve relative to the project root (one level up from src/renderer)
   const tagsIniPath = path.join(__dirname, '..', 'database', 'tags.ini');
-  const peoplePath = path.join(__dirname, '..', 'database', 'people.txt');
+  const peoplePath = path.join(__dirname, '..', 'database', 'people.inix');
   console.log(`Using tags.ini path: ${tagsIniPath}`);
 
   // --- Initialization ---
