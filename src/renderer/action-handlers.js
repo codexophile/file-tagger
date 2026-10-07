@@ -15,6 +15,7 @@ const tagStore = require('./tag-store');
 const {
   parseTags,
   formatNewTagGroup,
+  formatLegacyTagGroup,
   canUseNewFormat,
 } = require('./tag-formats');
 
@@ -214,7 +215,7 @@ function handleProceed() {
         const tagNames = tagsToAppend.map(tag => tag.slice(1, -1));
         const tagsToAdd = canUseNewFormat(tagNames)
           ? formatNewTagGroup(tagNames)
-          : tagsToAppend.join(' ');
+          : formatLegacyTagGroup(tagNames);
         newFileName += ' ' + tagsToAdd;
       }
       newFileName = newFileName.trim() + extension;
@@ -283,7 +284,7 @@ function handleCopyNewTags() {
   const tagNames = newTagsArray.map(tag => tag.slice(1, -1));
   const textToBeCopied = canUseNewFormat(tagNames)
     ? formatNewTagGroup(tagNames)
-    : newTagsArray.join(' ');
+    : formatLegacyTagGroup(tagNames);
   if (textToBeCopied) {
     clipboard.writeText(textToBeCopied.trim());
     console.log('Copied selected tags:', textToBeCopied.trim());

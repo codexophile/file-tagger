@@ -10,6 +10,7 @@ const ANY_TAG_REGEX = new RegExp(
   `(?:${MULTI_TAG_PATTERN})|(?:${LEGACY_TAG_PATTERN})`,
   'g'
 );
+const MULTI_TAG_BLOCK_REGEX = new RegExp(`^${MULTI_TAG_PATTERN}$`);
 const NEW_FORMAT_TAG_NAME_REGEX = /^[^\[\],\s]+$/;
 
 function parseTags(text) {
@@ -18,8 +19,7 @@ function parseTags(text) {
 
   matches.forEach(tagBlock => {
     const contents = tagBlock.slice(1, -1);
-    if (MULTI_TAG_REGEX.test(tagBlock)) {
-      MULTI_TAG_REGEX.lastIndex = 0;
+    if (MULTI_TAG_BLOCK_REGEX.test(tagBlock)) {
       contents
         .split(/[\s,]+/)
         .filter(Boolean)
@@ -37,6 +37,10 @@ function formatNewTagGroup(tagNames) {
   return `[${tagNames.join(' ')}]`;
 }
 
+function formatLegacyTagGroup(tagNames) {
+  return tagNames.map(tagName => `[${tagName}]`).join(' ');
+}
+
 function canUseNewFormat(tagNames) {
   return tagNames.length > 0 && tagNames.every(tagName =>
     NEW_FORMAT_TAG_NAME_REGEX.test(tagName)
@@ -51,5 +55,6 @@ module.exports = {
   ANY_TAG_REGEX,
   parseTags,
   formatNewTagGroup,
+  formatLegacyTagGroup,
   canUseNewFormat,
 };
