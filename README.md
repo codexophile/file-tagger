@@ -121,7 +121,7 @@ ExampleTag=
 
 ## Person tags
 
-Person tags are stored separately in [`database/people.txt`](./database/people.txt).
+Person tags are stored separately in [`database/people.inix`](./database/people.inix).
 They always begin with `@` and are grouped in sections. A person entry starts
 with its tag and may have `name`, `photo`, and comma-separated `links`
 attributes:
@@ -133,6 +133,11 @@ name=Alice Example
 photo=https://example.com/alice.jpg
 links=https://example.com/alice, https://github.com/example
 ```
+
+When `photo` is omitted, the application looks for an avatar in
+`C:\mega\IDEs\AutoHotkey v2\everything-assistant\avatars\<group>\<person-id>.<extension>`.
+The group and person ID are matched case-insensitively, and the explicit
+`photo` value takes precedence when present.
 
 The Person tags tab displays these entries and uses the same search box as the
 Regular tags tab. Selecting a person applies the `@` tag to the filename using

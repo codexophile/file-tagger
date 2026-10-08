@@ -1,6 +1,31 @@
 'use strict';
 
 const fs = require('fs');
+const path = require('path');
+
+const avatarRoot = 'C:\\mega\\IDEs\\AutoHotkey v2\\everything-assistant\\avatars';
+
+function findAvatarPath(groupName, personTag) {
+  try {
+    if (!fs.existsSync(avatarRoot)) return '';
+
+    const category = fs.readdirSync(avatarRoot, { withFileTypes: true })
+      .find(entry => entry.isDirectory() &&
+        entry.name.toLowerCase() === groupName.toLowerCase());
+    if (!category) return '';
+
+    const personId = personTag.slice(1).toLowerCase();
+    const avatar = fs.readdirSync(path.join(avatarRoot, category.name), { withFileTypes: true })
+      .find(entry => entry.isFile() &&
+        path.parse(entry.name).name.toLowerCase() === personId);
+    return avatar
+      ? path.join(avatarRoot, category.name, avatar.name)
+      : '';
+  } catch (error) {
+    console.error(`Error finding avatar for ${personTag} in ${groupName}:`, error);
+    return '';
+  }
+}
 
 function loadPeopleFromFile(peoplePath) {
   try {
@@ -28,7 +53,12 @@ function loadPeopleFromFile(peoplePath) {
 
         if (line.startsWith('@')) {
           if (!currentGroup) return;
-          currentPerson = { tag: line, name: '', photo: '', links: [] };
+          currentPerson = {
+            tag: line,
+            name: '',
+            photo: findAvatarPath(currentGroup, line),
+            links: [],
+          };
           groups[currentGroup].push(currentPerson);
           return;
         }
@@ -54,4 +84,4 @@ function loadPeopleFromFile(peoplePath) {
   }
 }
 
-module.exports = { loadPeopleFromFile };
+module.exports = { loadPeopleFromFile, findAvatarPath };
