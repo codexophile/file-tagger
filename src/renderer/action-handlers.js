@@ -379,6 +379,22 @@ function switchTab(tab) {
   filterActiveTab();
 }
 
+function openTabById(tabId) {
+  const tabById = {
+    'regular-tags-tab': 'regular',
+    'people-tags-tab': 'people',
+  };
+  const tab = tabById[tabId];
+
+  if (!tab) {
+    console.warn(`Unknown tab id: ${tabId}`);
+    return false;
+  }
+
+  switchTab(tab);
+  return true;
+}
+
 function handleGlobalKeydown(event) {
   // Ctrl+F / Cmd+F for search focus
   if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'f') {
@@ -418,6 +434,7 @@ function handleGlobalKeydown(event) {
 }
 
 module.exports = {
+  openTabById,
   setupActionHandlers,
 };
 // --- END OF FILE renderer/action-handlers.js ---

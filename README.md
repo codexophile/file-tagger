@@ -160,6 +160,18 @@ Files can be loaded by dragging them into the drop area. The application also
 accepts file paths supplied through its command-line integration. Only files
 that exist and are writable can be renamed successfully.
 
+To open a specific tag tab when starting the application, pass its tab element
+ID with `--tab-id`:
+
+```text
+file-tagger --tab-id regular-tags-tab
+file-tagger --tab-id people-tags-tab
+```
+
+The supported tab IDs are `regular-tags-tab` and `people-tags-tab`. If the
+application is already running, a new launch forwards the tab selection to the
+existing window.
+
 ## Format limitations
 
 - There is no escaping mechanism for a literal `[` or `]` in a tag.

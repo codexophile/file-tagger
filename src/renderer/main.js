@@ -19,6 +19,20 @@
   const dragDrop = require('./renderer/drag-drop');
   const actionHandlers = require('./renderer/action-handlers');
 
+  function getTabId(args) {
+    const tabArgumentIndex = args.findIndex(
+      (arg) => arg === '--tab-id' || arg.startsWith('--tab-id=')
+    );
+
+    if (tabArgumentIndex === -1) {
+      return null;
+    }
+
+    return args[tabArgumentIndex].startsWith('--tab-id=')
+      ? args[tabArgumentIndex].slice('--tab-id='.length)
+      : args[tabArgumentIndex + 1];
+  }
+
   // --- Constants ---
   // Resolve relative to the project root (one level up from src/renderer)
   const tagsIniPath = path.join(__dirname, '..', 'database', 'tags.ini');
@@ -64,11 +78,28 @@
   // 5. Handle Command Line Arguments (Asynchronously)
   try {
     const args = await ipcHandler.getArgs();
-    // Args from main process usually don't include the script name itself
-    // The first arg (index 0) would be the first actual parameter passed
-    if (args && args.length > 0 && args[1]) {
+    const tabArgumentIndex = args.findIndex(
+      (arg) => arg === '--tab-id' || arg.startsWith('--tab-id=')
+    );
+    const tabId = getTabId(args);
+
+    if (tabId) {
+      actionHandlers.openTabById(tabId);
+    }
+
+    const inputFilesString =
+      tabArgumentIndex === -1
+        ? args[1]
+        : args.find(
+            (arg, index) =>
+              index >
+                tabArgumentIndex +
+                  (args[tabArgumentIndex] === '--tab-id' ? 1 : 0) &&
+              !arg.startsWith('--')
+          );
+
+    if (inputFilesString) {
       console.log('Processing command line arguments:', args);
-      const inputFilesString = args[1]; // Assuming files are passed as the first arg, newline separated
       const inputFilesArray = inputFilesString.trim().split(/\r?\n/);
 
       // Clear existing state before loading from args
@@ -88,6 +119,13 @@
     console.error('Error processing command line arguments:', err);
     // Potentially show an error to the user
   }
+
+  ipcHandler.onArgs((args) => {
+    const tabId = getTabId(args);
+    if (tabId) {
+      actionHandlers.openTabById(tabId);
+    }
+  });
 
   // 6. Initial Filter (in case search box has initial value, unlikely but safe)
   tagUI.filterTags(

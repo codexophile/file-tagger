@@ -9,26 +9,23 @@ let mainWindow; // Keep a reference to the main window
 const gotTheLock = app.requestSingleInstanceLock();
 
 if (!gotTheLock) {
-  // This is the second instance. We want this one to run,
-  // so we DON'T quit here. The 'second-instance' event will be
-  // emitted in the *first* instance, which we'll handle below
-  // by quitting that first instance.
-  console.log("Second instance detected. The first instance should quit soon.");
+  console.log("Another instance is already running. Forwarding arguments.");
+  app.quit();
 } else {
-  // This is the first instance. Attach the 'second-instance' listener.
   app.on("second-instance", (event, commandLine, workingDirectory) => {
-    console.log("First instance received 'second-instance' event. Quitting.");
-    console.log("New instance command line:", commandLine);
+    console.log("Received command line from second instance:", commandLine);
     console.log("New instance working directory:", workingDirectory);
 
-    // Quit this (the first) instance immediately.
-    app.quit(); // Force quit the original instance
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      if (mainWindow.isMinimized()) {
+        mainWindow.restore();
+      }
+      mainWindow.focus();
+      mainWindow.webContents.send("command-line-args", commandLine);
+    }
   });
 
-  // Continue setting up the first instance below...
-  console.log(
-    "First instance acquired lock. Ready for potential second instances."
-  );
+  console.log("First instance acquired lock.");
 }
 // --- END SINGLE INSTANCE LOCK LOGIC ---
 
@@ -80,9 +77,10 @@ const createWindow = () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  // createWindow will only be called if:
-  // 1. This is the first instance (gotTheLock was true).
-  // 2. This is the second instance (gotTheLock was false), and it didn't quit immediately.
+  if (!gotTheLock) {
+    return;
+  }
+
   createWindow();
 
   // On OS X it's common to re-create a window in the app when the

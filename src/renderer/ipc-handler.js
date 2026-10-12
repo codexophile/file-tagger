@@ -36,7 +36,14 @@ function getArgs() {
   });
 }
 
+function onArgs(listener) {
+  ipcRenderer.on("command-line-args", (_event, args) => {
+    listener(args);
+  });
+}
+
 module.exports = {
   getArgs,
+  onArgs,
 };
 // --- END OF FILE renderer/ipc-handler.js ---
