@@ -21,7 +21,7 @@
 
   function getTabId(args) {
     const tabArgumentIndex = args.findIndex(
-      (arg) => arg === '--tab-id' || arg.startsWith('--tab-id=')
+      arg => arg === '--tab-id' || arg.startsWith('--tab-id='),
     );
 
     if (tabArgumentIndex === -1) {
@@ -79,7 +79,7 @@
   try {
     const args = await ipcHandler.getArgs();
     const tabArgumentIndex = args.findIndex(
-      (arg) => arg === '--tab-id' || arg.startsWith('--tab-id=')
+      arg => arg === '--tab-id' || arg.startsWith('--tab-id='),
     );
     const tabId = getTabId(args);
 
@@ -87,16 +87,7 @@
       actionHandlers.openTabById(tabId);
     }
 
-    const inputFilesString =
-      tabArgumentIndex === -1
-        ? args[1]
-        : args.find(
-            (arg, index) =>
-              index >
-                tabArgumentIndex +
-                  (args[tabArgumentIndex] === '--tab-id' ? 1 : 0) &&
-              !arg.startsWith('--')
-          );
+    const inputFilesString = getArgValue(args, '--files-list');
 
     if (inputFilesString) {
       console.log('Processing command line arguments:', args);
@@ -120,7 +111,19 @@
     // Potentially show an error to the user
   }
 
-  ipcHandler.onArgs((args) => {
+  /**
+   * Returns the value following a flag in an argument array.
+   *
+   * @param {string[]} argv - Argument array to search.
+   * @param {string} flag - Flag name to look for, e.g. `--files-list`.
+   * @returns {string | undefined} The next element after the flag, or `undefined` if absent.
+   */
+  function getArgValue(argv, flag) {
+    const i = argv.indexOf(flag);
+    return i !== -1 ? argv[i + 1] : undefined;
+  }
+
+  ipcHandler.onArgs(args => {
     const tabId = getTabId(args);
     if (tabId) {
       actionHandlers.openTabById(tabId);
