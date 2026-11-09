@@ -3,7 +3,9 @@
 const fs = require("fs");
 const path = require("path");
 const $ = require("jquery"); // Use local $ require
-const { parseTags, formatNewTagGroup } = require("./tag-formats");
+const { loadSharedModule } = require("./shared-module");
+const { parseTags, formatNewTagGroup, tagNamesFromTags } =
+  loadSharedModule("tagging.js");
 
 function addFileOptionHoverEffect(option) {
   option.addEventListener("mouseenter", () => {
@@ -72,7 +74,7 @@ function getCurrentTagsFromFiles(filesListEl) {
 
   const sortedTags = [...allTags].sort();
   return sortedTags.length
-    ? formatNewTagGroup(sortedTags.map(tag => tag.slice(1, -1)))
+    ? formatNewTagGroup(tagNamesFromTags(sortedTags))
     : "";
 }
 

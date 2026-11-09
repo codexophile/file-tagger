@@ -35,8 +35,12 @@
 
   // --- Constants ---
   // Resolve relative to the project root (one level up from src/renderer)
-  const tagsIniPath = path.join(__dirname, '..', 'database', 'tags.ini');
-  const peoplePath = path.join(__dirname, '..', 'database', 'people.inix');
+  const tagsIniPath =
+    'C:\\mega\\IDEs\\eclectic\\global-file-management-system\\database\\tags.ini';
+  const peoplePath =
+    'C:\\mega\\IDEs\\eclectic\\global-file-management-system\\database\\people.inix';
+  // const tagsIniPath = path.join(__dirname, '..', 'database', 'tags.ini');
+  // const peoplePath = path.join(__dirname, '..', 'database', 'people.inix');
   console.log(`Using tags.ini path: ${tagsIniPath}`);
 
   // --- Initialization ---

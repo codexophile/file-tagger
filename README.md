@@ -3,6 +3,16 @@
 File Tagger adds bracketed tags to file names. Tags are selected in the
 Electron UI and appended to the file name before its extension.
 
+The filename tag grammar and append/deduplication rules are maintained in the
+shared [`shared/tagging.js`](../shared/tagging.js) module. File Tagger consumes
+that module through its renderer compatibility facade, while Everything
+Assistant loads the same module in its browser UI. This keeps parsing and
+formatting behavior consistent across both applications.
+
+People-tag database parsing is likewise shared through
+[`shared/people-tags.js`](../shared/people-tags.js); each application only
+adds its own avatar-loading behavior.
+
 ## File-name tag format
 
 The legacy format represents each tag by its name enclosed in its own pair of

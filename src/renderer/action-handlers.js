@@ -17,10 +17,9 @@ let peopleData;
 let activeTab = 'regular';
 const tagStore = require('./tag-store');
 const {
-  parseTags,
-  formatNewTagGroup,
-  formatLegacyTagGroup,
-  canUseNewFormat,
+  appendTagsToBaseName,
+  formatTagGroup,
+  tagNamesFromTags,
 } = require('./tag-formats');
 
 function setupActionHandlers(
@@ -212,26 +211,11 @@ function handleProceed() {
         ext: extension,
         dir: dirPath,
       } = path.parse(fullName);
-      const currentTagsArray = parseTags(fileName);
-      // Only add new tags that are not already present
-      const currentTagSet = new Set(currentTagsArray);
-      const tagsToAppend = [];
-      for (const tag of newTagsArray) {
-        if (!currentTagSet.has(tag)) {
-          tagsToAppend.push(tag);
-        }
-      }
-
-      // Reconstruct the filename: keep original base name (with tags in place), append new tags at the end
-      let newFileName = fileName;
-      if (tagsToAppend.length > 0) {
-        const tagNames = tagsToAppend.map(tag => tag.slice(1, -1));
-        const tagsToAdd = canUseNewFormat(tagNames)
-          ? formatNewTagGroup(tagNames)
-          : formatLegacyTagGroup(tagNames);
-        newFileName += ' ' + tagsToAdd;
-      }
-      newFileName = newFileName.trim() + extension;
+      const { name: updatedFileName } = appendTagsToBaseName(
+        fileName,
+        newTagsArray,
+      );
+      const newFileName = updatedFileName + extension;
       const newPath = path.join(dirPath, newFileName);
 
       if (fullName === newPath) {
@@ -294,10 +278,7 @@ function handleCopyNewTags() {
   const newTagsArray = tagUIModule.getNewTagsArray(
     domElements.mainTagsContainerEl
   );
-  const tagNames = newTagsArray.map(tag => tag.slice(1, -1));
-  const textToBeCopied = canUseNewFormat(tagNames)
-    ? formatNewTagGroup(tagNames)
-    : formatLegacyTagGroup(tagNames);
+  const textToBeCopied = formatTagGroup(tagNamesFromTags(newTagsArray));
   if (textToBeCopied) {
     clipboard.writeText(textToBeCopied.trim());
     console.log('Copied selected tags:', textToBeCopied.trim());
