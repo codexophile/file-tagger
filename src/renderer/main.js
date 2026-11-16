@@ -38,9 +38,9 @@
   const tagsIniPath =
     'C:\\mega\\IDEs\\eclectic\\global-file-management-system\\database\\tags.ini';
   const peoplePath =
-    'C:\\mega\\IDEs\\eclectic\\global-file-management-system\\database\\people.inix';
+    'C:\\mega\\IDEs\\eclectic\\global-file-management-system\\database\\people.yaml';
   // const tagsIniPath = path.join(__dirname, '..', 'database', 'tags.ini');
-  // const peoplePath = path.join(__dirname, '..', 'database', 'people.inix');
+  // const peoplePath = path.join(__dirname, '..', 'database', 'people.yaml');
   console.log(`Using tags.ini path: ${tagsIniPath}`);
 
   // --- Initialization ---

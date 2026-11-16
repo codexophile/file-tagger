@@ -8,6 +8,13 @@ const { parsePeopleTags } = loadSharedModule('people-tags.js');
 const avatarRoot =
   'C:\\mega\\IDEs\\eclectic\\global-file-management-system\\everything-assistant-ahk\\avatars\\';
 
+/**
+ * Finds a matching avatar for a person in the shared avatar directory.
+ *
+ * @param {string} groupName - Person group name.
+ * @param {string} personTag - Person tag, including its leading @.
+ * @returns {string} Matching avatar path, or an empty string.
+ */
 function findAvatarPath(groupName, personTag) {
   try {
     if (!fs.existsSync(avatarRoot)) return '';
@@ -41,12 +48,18 @@ function findAvatarPath(groupName, personTag) {
   }
 }
 
+/**
+ * Loads grouped people from a YAML database and enriches missing photos.
+ *
+ * @param {string} peoplePath - Path to the YAML people database.
+ * @returns {Record<string, Array<Object>>} Parsed people grouped by category.
+ */
 function loadPeopleFromFile(peoplePath) {
   try {
     if (!fs.existsSync(peoplePath)) {
       fs.writeFileSync(
         peoplePath,
-        '[People]\n@example\nname=Example Person\n',
+        'groups:\n  People:\n    - tag: "@example"\n      name: "Example Person"\n      photo: ""\n      links: []\n',
         'utf-8',
       );
     }

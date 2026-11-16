@@ -131,17 +131,19 @@ ExampleTag=
 
 ## Person tags
 
-Person tags are stored separately in [`database/people.inix`](./database/people.inix).
-They always begin with `@` and are grouped in sections. A person entry starts
-with its tag and may have `name`, `photo`, and comma-separated `links`
-attributes:
+Person tags are stored separately in [`database/people.yaml`](../database/people.yaml).
+They always begin with `@` and are grouped under the top-level `groups` mapping.
+Each person record has a `tag`, `name`, `photo`, and `links` list:
 
-```text
-[Friends]
-@alice
-name=Alice Example
-photo=https://example.com/alice.jpg
-links=https://example.com/alice, https://github.com/example
+```yaml
+groups:
+  Friends:
+    - tag: "@alice"
+      name: "Alice Example"
+      photo: "https://example.com/alice.jpg"
+      links:
+        - "https://example.com/alice"
+        - "https://github.com/example"
 ```
 
 When `photo` is omitted, the application looks for an avatar in
@@ -152,6 +154,20 @@ The group and person ID are matched case-insensitively, and the explicit
 The Person tags tab displays these entries and uses the same search box as the
 Regular tags tab. Selecting a person applies the `@` tag to the filename using
 the same bracketed tag format as regular tags, for example `[@alice]`.
+
+Profile account metadata is stored in
+[`database/profiles.yaml`](../database/profiles.yaml). It uses the same
+top-level `groups` mapping, with each record containing an `id` and an
+`accounts` mapping whose values are lists:
+
+```yaml
+groups:
+  dancers-sri-lankan:
+    - id: "lawan_bandara"
+      accounts:
+        instagram:
+          - ""
+```
 
 ## Current tags
 
