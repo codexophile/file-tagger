@@ -79,6 +79,25 @@
     peopleData,
   );
 
+  /**
+   * Replaces the tagger file selection with newline-delimited paths.
+   *
+   * @param {string} inputFilesString - Newline-delimited file paths.
+   * @returns {void}
+   * @example
+   * loadInputFiles('C:\\media\\photo.jpg');
+   */
+  function loadInputFiles(inputFilesString) {
+    const inputFilesArray = inputFilesString.trim().split(/\r?\n/);
+    fileList.clearFilesList(domElements.filesListEl);
+    tagUI.clearActiveTags(domElements.mainTagsContainerEl);
+    tagUI.cancelAllInlineAddTags(domElements.mainTagsContainerEl);
+    fileList.prepareInputFilesSection(
+      domElements.filesListEl,
+      inputFilesArray,
+    );
+  }
+
   // 5. Handle Command Line Arguments (Asynchronously)
   try {
     const args = await ipcHandler.getArgs();
@@ -95,18 +114,7 @@
 
     if (inputFilesString) {
       console.log('Processing command line arguments:', args);
-      const inputFilesArray = inputFilesString.trim().split(/\r?\n/);
-
-      // Clear existing state before loading from args
-      fileList.clearFilesList(domElements.filesListEl);
-      tagUI.clearActiveTags(domElements.mainTagsContainerEl);
-      tagUI.cancelAllInlineAddTags(domElements.mainTagsContainerEl);
-
-      // Load files
-      fileList.prepareInputFilesSection(
-        domElements.filesListEl,
-        inputFilesArray,
-      );
+      loadInputFiles(inputFilesString);
     } else {
       console.log('No valid command line arguments to process.');
     }
@@ -133,6 +141,21 @@
       actionHandlers.openTabById(tabId);
     }
   });
+
+  window.addEventListener('message', event => {
+    if (event.data?.type !== 'gfms-file-tagger-selection') return;
+
+    if (event.data.tabId) {
+      actionHandlers.openTabById(event.data.tabId);
+    }
+    if (typeof event.data.paths === 'string' && event.data.paths.trim()) {
+      loadInputFiles(event.data.paths);
+    }
+  });
+
+  if (window.parent !== window) {
+    window.parent.postMessage({ type: 'gfms-file-tagger-ready' }, '*');
+  }
 
   // 6. Initial Filter (in case search box has initial value, unlikely but safe)
   tagUI.filterTags(

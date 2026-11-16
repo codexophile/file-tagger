@@ -170,6 +170,13 @@ Files can be loaded by dragging them into the drop area. The application also
 accepts file paths supplied through its command-line integration. Only files
 that exist and are writable can be renamed successfully.
 
+The Everything Assistant also embeds this same `src/index.html` page in its
+**File tagger** tab. The assistant sends the current selection to the embedded
+page with the `gfms-file-tagger-selection` message, so both entry points use
+the same markup, renderer, tag databases, and tagging behavior. The embedded
+page announces readiness with `gfms-file-tagger-ready`; this allows selections
+sent before the iframe finishes loading to be delivered after initialization.
+
 To open a specific tag tab when starting the application, pass its tab element
 ID with `--tab-id`:
 
