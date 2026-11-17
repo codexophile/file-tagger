@@ -3,6 +3,20 @@
 const $ = require('jquery');
 const { pathToFileURL } = require('url');
 
+/**
+ * Creates a readable display name from an ID.
+ *
+ * @param {string} id - Person identifier.
+ * @returns {string} Display name.
+ * @example
+ * displayName('some_person'); // 'Some Person'
+ */
+function displayName(id) {
+  return String(id || '')
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, character => character.toUpperCase());
+}
+
 function escapeHtml(value) {
   return String(value).replace(/[&<>"']/g, character => ({
     '&': '&amp;',
@@ -29,12 +43,12 @@ function createPersonElement(person, groupName) {
         `<a href="${escapeHtml(link)}" target="_blank" rel="noreferrer">${escapeHtml(link)}</a>`
       ).join('')}</div>`
     : '';
-  const description = person.name
-    ? `<span class="person-name">${escapeHtml(person.name)}</span>`
-    : '';
+  const description = `<span class="person-name">${escapeHtml(
+    person.name || displayName(person.id),
+  )}</span>`;
 
   return $(`<div class="person-card" data-search="${escapeHtml(
-    `${person.tag} ${person.name} ${person.links.join(' ')}`
+    `${person.tag} ${person.id} ${person.name} ${person.links.join(' ')}`
   )}">
     <input type="checkbox" id="${escapeHtml(id)}" value="${escapeHtml(person.tag)}">
     <label for="${escapeHtml(id)}" class="person-label">
@@ -75,4 +89,4 @@ function filterPeople(mainElement, noTagsMessageElement, searchText) {
   noTagsMessageElement.classList.toggle('visible', !anyVisible && Boolean(search));
 }
 
-module.exports = { populatePeopleUI, filterPeople };
+module.exports = { populatePeopleUI, filterPeople, displayName };

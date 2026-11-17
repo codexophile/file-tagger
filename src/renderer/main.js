@@ -16,6 +16,8 @@
   const tagUI = require('./renderer/tag-ui');
   const peopleStore = require('./renderer/people-store');
   const peopleUI = require('./renderer/people-ui');
+  const profileStore = require('./renderer/profile-store');
+  const profileUI = require('./renderer/profile-ui');
   const dragDrop = require('./renderer/drag-drop');
   const actionHandlers = require('./renderer/action-handlers');
 
@@ -39,6 +41,8 @@
     'C:\\mega\\IDEs\\eclectic\\global-file-management-system\\database\\tags.ini';
   const peoplePath =
     'C:\\mega\\IDEs\\eclectic\\global-file-management-system\\database\\people.yaml';
+  const profilesPath =
+    'C:\\mega\\IDEs\\eclectic\\global-file-management-system\\database\\profiles.yaml';
   // const tagsIniPath = path.join(__dirname, '..', 'database', 'tags.ini');
   // const peoplePath = path.join(__dirname, '..', 'database', 'people.yaml');
   console.log(`Using tags.ini path: ${tagsIniPath}`);
@@ -55,6 +59,7 @@
     currentTagData,
   );
   const peopleData = peopleStore.loadPeopleFromFile(peoplePath);
+  const profileData = profileStore.loadProfilesFromFile(profilesPath);
 
   // 3. Setup Drag and Drop
   // Pass necessary functions from other modules
@@ -77,6 +82,9 @@
     tagUI,
     peopleUI,
     peopleData,
+    profileUI,
+    profileData,
+    profilesPath,
   );
 
   /**
@@ -92,10 +100,7 @@
     fileList.clearFilesList(domElements.filesListEl);
     tagUI.clearActiveTags(domElements.mainTagsContainerEl);
     tagUI.cancelAllInlineAddTags(domElements.mainTagsContainerEl);
-    fileList.prepareInputFilesSection(
-      domElements.filesListEl,
-      inputFilesArray,
-    );
+    fileList.prepareInputFilesSection(domElements.filesListEl, inputFilesArray);
   }
 
   // 5. Handle Command Line Arguments (Asynchronously)

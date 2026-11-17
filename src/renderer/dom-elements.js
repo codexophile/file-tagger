@@ -17,6 +17,7 @@ const elements = {
   tagSearchContainer: document.querySelector('#tag-search-container'), // Added for message placement
   regularTagsTab: document.querySelector('#regular-tags-tab'),
   peopleTagsTab: document.querySelector('#people-tags-tab'),
+  profilesTagsTab: document.querySelector('#profiles-tags-tab'),
   noTagsMessage: null, // Will be created dynamically
 };
 

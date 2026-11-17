@@ -132,13 +132,14 @@ ExampleTag=
 ## Person tags
 
 Person tags are stored separately in [`database/people.yaml`](../database/people.yaml).
-They always begin with `@` and are grouped under the top-level `groups` mapping.
-Each person record has a `tag`, `name`, `photo`, and `links` list:
+They always begin with `@` followed by the record's `id` and are grouped under
+the top-level `groups` mapping. Each person record has an `id`, optional `name`,
+optional `photo`, and `links` list:
 
 ```yaml
 groups:
   Friends:
-    - tag: "@alice"
+    - id: "alice"
       name: "Alice Example"
       photo: "https://example.com/alice.jpg"
       links:
@@ -147,9 +148,11 @@ groups:
 ```
 
 When `photo` is omitted, the application looks for an avatar in
-`C:\mega\IDEs\AutoHotkey v2\everything-assistant\avatars\<group>\<person-id>.<extension>`.
-The group and person ID are matched case-insensitively, and the explicit
-`photo` value takes precedence when present.
+`database/avatars/<group>/<id>.<extension>`. The group and ID are matched
+case-insensitively, and the explicit `photo` value takes precedence. If
+`name` is omitted, the UI displays the ID with underscores replaced by spaces
+and each word capitalized; the YAML record is not rewritten with that display
+name.
 
 The Person tags tab displays these entries and uses the same search box as the
 Regular tags tab. Selecting a person applies the `@` tag to the filename using
@@ -168,6 +171,10 @@ groups:
         instagram:
           - ""
 ```
+
+The file-tagger interface exposes one tab per database file: `tags.ini`,
+`people.yaml`, and `profiles.yaml`. Selecting a person or profile applies
+`@<id>` as the filename tag. **Edit Tags** opens the active tab's source file.
 
 ## Current tags
 
@@ -199,9 +206,11 @@ ID with `--tab-id`:
 ```text
 file-tagger --tab-id regular-tags-tab
 file-tagger --tab-id people-tags-tab
+file-tagger --tab-id profiles-tags-tab
 ```
 
-The supported tab IDs are `regular-tags-tab` and `people-tags-tab`. If the
+The supported tab IDs are `regular-tags-tab`, `people-tags-tab`, and
+`profiles-tags-tab`. If the
 application is already running, a new launch forwards the tab selection to the
 existing window.
 

@@ -6,16 +6,16 @@ const { loadSharedModule } = require('./shared-module');
 const { parsePeopleTags } = loadSharedModule('people-tags.js');
 
 const avatarRoot =
-  'C:\\mega\\IDEs\\eclectic\\global-file-management-system\\everything-assistant-ahk\\avatars\\';
+  'C:\\mega\\IDEs\\eclectic\\global-file-management-system\\database\\avatars\\';
 
 /**
  * Finds a matching avatar for a person in the shared avatar directory.
  *
  * @param {string} groupName - Person group name.
- * @param {string} personTag - Person tag, including its leading @.
+ * @param {string} personId - Person id.
  * @returns {string} Matching avatar path, or an empty string.
  */
-function findAvatarPath(groupName, personTag) {
+function findAvatarPath(groupName, personId) {
   try {
     if (!fs.existsSync(avatarRoot)) return '';
 
@@ -28,7 +28,7 @@ function findAvatarPath(groupName, personTag) {
       );
     if (!category) return '';
 
-    const personId = personTag.slice(1).toLowerCase();
+    const normalizedId = personId.replace(/^@/, '').toLowerCase();
     const avatar = fs
       .readdirSync(path.join(avatarRoot, category.name), {
         withFileTypes: true,
@@ -36,12 +36,12 @@ function findAvatarPath(groupName, personTag) {
       .find(
         entry =>
           entry.isFile() &&
-          path.parse(entry.name).name.toLowerCase() === personId,
+          path.parse(entry.name).name.toLowerCase() === normalizedId,
       );
     return avatar ? path.join(avatarRoot, category.name, avatar.name) : '';
   } catch (error) {
     console.error(
-      `Error finding avatar for ${personTag} in ${groupName}:`,
+      `Error finding avatar for ${personId} in ${groupName}:`,
       error,
     );
     return '';
@@ -59,7 +59,7 @@ function loadPeopleFromFile(peoplePath) {
     if (!fs.existsSync(peoplePath)) {
       fs.writeFileSync(
         peoplePath,
-        'groups:\n  People:\n    - tag: "@example"\n      name: "Example Person"\n      photo: ""\n      links: []\n',
+        'groups:\n  People:\n    - id: "example"\n      name: "Example Person"\n      links: []\n',
         'utf-8',
       );
     }
@@ -67,7 +67,7 @@ function loadPeopleFromFile(peoplePath) {
     const groups = parsePeopleTags(fs.readFileSync(peoplePath, 'utf-8'));
     Object.entries(groups).forEach(([groupName, people]) => {
       people.forEach(person => {
-        if (!person.photo) person.photo = findAvatarPath(groupName, person.tag);
+        if (!person.photo) person.photo = findAvatarPath(groupName, person.id);
       });
     });
 

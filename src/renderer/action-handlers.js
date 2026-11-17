@@ -14,6 +14,9 @@ let fileListModule;
 let tagUIModule;
 let peopleUIModule;
 let peopleData;
+let profileUIModule;
+let profileData;
+let profilesPath;
 let activeTab = 'regular';
 const tagStore = require('./tag-store');
 const {
@@ -29,7 +32,10 @@ function setupActionHandlers(
   _fileListModule,
   _tagUIModule,
   _peopleUIModule,
-  _peopleData
+  _peopleData,
+  _profileUIModule,
+  _profileData,
+  _profilesPath
 ) {
   // Store references
   domElements = _domElements;
@@ -39,6 +45,9 @@ function setupActionHandlers(
   tagUIModule = _tagUIModule;
   peopleUIModule = _peopleUIModule;
   peopleData = _peopleData;
+  profileUIModule = _profileUIModule;
+  profileData = _profileData;
+  profilesPath = _profilesPath;
 
   // --- Attach Listeners ---
 
@@ -55,6 +64,7 @@ function setupActionHandlers(
   domElements.tagSearchInput.addEventListener('input', handleSearchInput);
   domElements.regularTagsTab.addEventListener('click', () => switchTab('regular'));
   domElements.peopleTagsTab.addEventListener('click', () => switchTab('people'));
+  domElements.profilesTagsTab.addEventListener('click', () => switchTab('profiles'));
   if (domElements.addGroupButton) {
     domElements.addGroupButton.addEventListener('click', handleAddGroup);
   }
@@ -68,7 +78,11 @@ function setupActionHandlers(
 // --- Handler Functions ---
 
 function handleEditTags() {
-  const databasePath = activeTab === 'people' ? peoplePath : tagsIniPath;
+  const databasePath = activeTab === 'people'
+    ? peoplePath
+    : activeTab === 'profiles'
+      ? profilesPath
+      : tagsIniPath;
   exec(`notepad "${databasePath}"`, error => {
     if (error) {
       console.error(`Error opening tag database: ${error}`);
@@ -326,6 +340,12 @@ function filterActiveTab() {
       domElements.noTagsMessage,
       domElements.tagSearchInput.value
     );
+  } else if (activeTab === 'profiles') {
+    profileUIModule.filterProfiles(
+      domElements.mainTagsContainerEl,
+      domElements.noTagsMessage,
+      domElements.tagSearchInput.value
+    );
   } else {
     tagUIModule.filterTags(
       domElements.mainTagsContainerEl,
@@ -338,18 +358,30 @@ function filterActiveTab() {
 function switchTab(tab) {
   activeTab = tab;
   const showingPeople = tab === 'people';
+  const showingProfiles = tab === 'profiles';
   domElements.regularTagsTab.classList.toggle('active', !showingPeople);
   domElements.peopleTagsTab.classList.toggle('active', showingPeople);
-  domElements.regularTagsTab.setAttribute('aria-selected', String(!showingPeople));
+  domElements.profilesTagsTab.classList.toggle('active', showingProfiles);
+  domElements.regularTagsTab.setAttribute(
+    'aria-selected',
+    String(!showingPeople && !showingProfiles)
+  );
   domElements.peopleTagsTab.setAttribute('aria-selected', String(showingPeople));
+  domElements.profilesTagsTab.setAttribute('aria-selected', String(showingProfiles));
   domElements.mainTagsContainerEl.setAttribute(
     'aria-labelledby',
-    showingPeople ? 'people-tags-tab' : 'regular-tags-tab'
+    showingPeople
+      ? 'people-tags-tab'
+      : showingProfiles
+        ? 'profiles-tags-tab'
+        : 'regular-tags-tab'
   );
-  domElements.addGroupButton.hidden = showingPeople;
+  domElements.addGroupButton.hidden = showingPeople || showingProfiles;
   domElements.mainTagsContainerEl.innerHTML = '';
   if (showingPeople) {
     peopleUIModule.populatePeopleUI(domElements.mainTagsContainerEl, peopleData);
+  } else if (showingProfiles) {
+    profileUIModule.populateProfileUI(domElements.mainTagsContainerEl, profileData);
   } else {
     tagUIModule.populateTagUI(
       tagsIniPath,
@@ -364,6 +396,7 @@ function openTabById(tabId) {
   const tabById = {
     'regular-tags-tab': 'regular',
     'people-tags-tab': 'people',
+    'profiles-tags-tab': 'profiles',
   };
   const tab = tabById[tabId];
 

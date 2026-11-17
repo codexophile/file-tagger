@@ -194,6 +194,27 @@ body {
   white-space: nowrap;
 }
 
+.profile-label {
+  display: inline-flex;
+  align-items: center;
+  margin: 0.4rem;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  max-width: 100%;
+}
+
+.profile-group input[type="checkbox"] {
+  display: none;
+}
+
+.profile-group input[type="checkbox"]:checked + .profile-label {
+  background-color: var(--accent-primary);
+  color: white;
+}
+
 .group:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
